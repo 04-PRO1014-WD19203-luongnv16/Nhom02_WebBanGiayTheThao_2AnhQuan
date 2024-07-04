@@ -5,9 +5,6 @@
     if (isset($_GET['act'])) {
         $act = $_GET['act'];
         switch ($act) {
-            case 'dang_nhap':
-                include 'view/dangnhap.php';
-                break;
             case 'dang_ky':
                     $dem_loi = 0;
                     $loi_ten = $loi_email = $loi_mat_khau = $loi_nhap_lai_mat_khau = "";
