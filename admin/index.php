@@ -341,4 +341,8 @@ ob_end_flush();
  function khoi_phuc_san_pham(){
     return confirm('Bạn muốn khôi phục sản phẩm này chứ?')
  }
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> e7837b1b405ea342f146a0b16c6ef664742f679e
