@@ -11,14 +11,14 @@ if(isset($_GET['act'])){
     switch ($act) {
         #danh mục----------
         case 'danh_muc':
-            $danh_muc = tat_ca_danh_muc();
-            include 'view/danhmuc/list.php';
+        $danh_muc = tat_ca_danh_muc();
+        include 'view/danhmuc/list.php';
             break;
         case 'them_danh_muc':
                 if(isset($_POST['them_btn'])) {
                     $ten_danh_muc = $_POST['ten_danh_muc'];
                     
-                    if(empty($ten_danh_muc)) {
+                    if(empty($ten_danh_muc)) { 
                         $thongbao = "Vui lòng nhập tên danh mục";
                     } else {
                         $check = check_danh_muc($ten_danh_muc);
@@ -108,7 +108,7 @@ if(isset($_GET['act'])){
             include 'view/size/list.php';
             break;
         case 'them_size':
-               if(isset($_POST['them_btn'])) {
+                if(isset($_POST['them_btn'])) {
                     $ten_size = $_POST['ten_size'];
                     
                     if(empty($ten_size)) {
@@ -195,7 +195,7 @@ if(isset($_GET['act'])){
                 break;   
         #sản phẩm--------
             case 'san_pham':
-                            $iddm =0;
+                $iddm =0;
                 if(isset($_POST['tim_btn'])){
                     $iddm = $_POST['danh_muc'];
 
@@ -205,7 +205,7 @@ if(isset($_GET['act'])){
                 include 'view/sanpham/list.php';
                 break;
                 case 'them_san_pham':
-                     $dem = 0;
+                    $dem = 0;
                     $loi_ten = $loi_mo_ta = $loi_size = $loi_gia_nhap = $loi_sale = $loi_gia_ban = $loi_so_luong = "";
                     if(isset($_POST['them_btn'])){
                         $ten_san_pham = $_POST['ten_san_pham'];
@@ -269,7 +269,7 @@ if(isset($_GET['act'])){
                     include 'view/sanpham/add.php';
                     break;
             case 'xoa_san_pham':
-                    if(isset($_GET['id_xoasp'])){
+            if(isset($_GET['id_xoasp'])){
                 $id_san_pham= $_GET['id_xoasp'];
                 xoa_san_pham($id_san_pham);
             }
@@ -283,11 +283,11 @@ if(isset($_GET['act'])){
             include 'view/sanpham/list.php';
             break;
             case 'san_pham_da_xoa':
-              $san_pham_da_xoa = san_pham_da_xoa();
+                $san_pham_da_xoa = san_pham_da_xoa();
             include 'view/sanpham/list_delete.php';
             break;
             case 'khoi_phuc_san_pham':
-               if(isset($_GET['id_spdx'])){
+                if(isset($_GET['id_spdx'])){
                     $id_san_pham= $_GET['id_spdx'];
                     khoi_phuc_san_pham($id_san_pham);
                 }
@@ -341,4 +341,8 @@ ob_end_flush();
  function khoi_phuc_san_pham(){
     return confirm('Bạn muốn khôi phục sản phẩm này chứ?')
  }
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> e7837b1b405ea342f146a0b16c6ef664742f679e
