@@ -11,29 +11,95 @@ if(isset($_GET['act'])){
     switch ($act) {
         #danh mục----------
         case 'danh_muc':
-
+            $danh_muc = tat_ca_danh_muc();
+            include 'view/danhmuc/list.php';
             break;
         case 'them_danh_muc':
-
+                if(isset($_POST['them_btn'])) {
+                    $ten_danh_muc = $_POST['ten_danh_muc'];
+                    
+                    if(empty($ten_danh_muc)) {
+                        $thongbao = "Vui lòng nhập tên danh mục";
+                    } else {
+                        $check = check_danh_muc($ten_danh_muc);
+                        
+                        if($check !== false) {
+                            $thongbao = "Danh mục đã tồn tại";
+                        } else {
+                            them_moi_danh_muc($ten_danh_muc);
+                           
+                        }
+                    }
+                }
+                $danh_muc = tat_ca_danh_muc();
+                include 'view/danhmuc/list.php';
                 break;
         case 'xoa_danh_muc':
-      
+        if(isset($_GET['iddm'])){
+        $iddm = $_GET['iddm'];
+        xoa_danh_muc($iddm);
+        $danh_muc = tat_ca_danh_muc();
+        include 'view/danhmuc/list.php';
+        }
         break;
         case 'danh_muc_da_xoa':
-      
+        $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+        include 'view/danhmuc/list_delete.php';
         break;
         case 'khoi_phuc_danh_muc':
-      
+        if(isset($_GET['id_dmdx'])){
+        $iddm = $_GET['id_dmdx'];
+        khoi_phuc_danh_muc($iddm);
+        $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+        include 'view/danhmuc/list_delete.php';
+        }
         break;
         case 'khoi_phuc_toan_bo_danh_muc':
-       
+        khoi_phuc_toan_bo_danh_muc();
+        $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+        include 'view/danhmuc/list_delete.php';
         break;
         case 'sua_danh_muc':
-
+        if(isset($_GET['idsdm'])){
+            $id_danh_muc = $_GET['idsdm'];
+            $one_danh_muc =show_1_danh_muc($id_danh_muc);
+        }
+        include 'view/danhmuc/fix.php';
         break;
 
         case 'update_danh_muc':
-           
+            if (isset($_POST['sua_btn'])) {
+                $id_danh_muc = $_POST['id_danh_muc'];
+                $ten_danh_muc = $_POST['ten_danh_muc'];
+                $errors = array();
+        
+                // Validate tên danh mục
+                if (empty(trim($ten_danh_muc))) {
+                    $errors[] = "Tên danh mục không được để trống.";
+                }
+        
+                // Nếu không có lỗi, cập nhật danh mục
+                if (empty($errors)) {
+                    sua_danh_muc($id_danh_muc, $ten_danh_muc);
+                  
+                   
+                    header('Location: index.php?act=danh_muc');
+                   
+                    exit();
+                } else {
+                    // Nếu có lỗi, lấy lại dữ liệu danh mục
+                    $one_danh_muc = show_1_danh_muc($id_danh_muc);
+                }
+            } else {
+                // Nếu không phải là POST request, lấy thông tin danh mục
+                if (isset($_GET['idsdm'])) {
+                    $id_danh_muc = $_GET['idsdm'];
+                    $one_danh_muc = show_1_danh_muc($id_danh_muc);
+                }
+            }
+        
+            $danh_muc = tat_ca_danh_muc();
+            include 'view/danhmuc/fix.php';
             break;
         
         #size-----------
