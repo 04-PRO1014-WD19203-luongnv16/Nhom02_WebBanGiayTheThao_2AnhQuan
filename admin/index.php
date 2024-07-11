@@ -206,68 +206,130 @@ if(isset($_GET['act'])){
                 break;
                 case 'them_san_pham':
                     $dem = 0;
-                    $loi_ten = $loi_mo_ta = $loi_size = $loi_gia_nhap = $loi_sale = $loi_gia_ban = $loi_so_luong = "";
-                    if(isset($_POST['them_btn'])){
+                    $loi_ten = $loi_danh_muc = $loi_mo_ta = $loi_size = $loi_gia_nhap = $loi_sale = $loi_gia_ban = $loi_so_luong = $loi_anh = "";
+                    
+                    if (isset($_POST['them_btn'])) {
                         $ten_san_pham = $_POST['ten_san_pham'];
                         $mo_ta = $_POST['mo_ta'];
-                        $danh_muc =$_POST['danh_muc'];
+                        $danh_muc = $_POST['danh_muc'];
                     
-                    #xử lý validate
-                       
-
-                    #thêm sp
-                    them_san_pham($ten_san_pham,$mo_ta,$danh_muc);
-                    $id_san_pham =  tim_idsp();
-
-                       // Xử lý biến thể sản phẩm
-                    $sizes = $_POST['size'];
-                    $importPrices = $_POST['importPrice'];
-                    $sales = $_POST['Sale'];
-                    $salePrices = $_POST['salePrice'];
-                    $quantities = $_POST['quantity'];
-
-                  // Lặp qua từng biến thể và thêm vào cơ sở dữ liệu
-                    for ($i = 0; $i < count($sizes); $i++) {
-                     $size = $sizes[$i];
-                     $gia_nhap = $importPrices[$i];
-                     $sale = $sales[$i];
-                     $gia_ban = $salePrices[$i];
-                     $so_luong = $quantities[$i];
-                    
-                    them_bien_the_san_pham($id_san_pham, $size, $gia_nhap, $gia_ban, $sale, $so_luong);
+                        # Xử lý validate
+                        if (empty($ten_san_pham)) {
+                            $loi_ten = "Tên sản phẩm không được để trống";
+                            $dem++;
                         }
-                        
-                    // Xử lý ảnh sản phẩm
-                    $numFiles = count($_FILES['productImages']['name']);
-                    $uploadedImages = array();
                     
-                    // Lặp qua từng file ảnh và xử lý
-                    for ($i = 0; $i < $numFiles; $i++){
-                     $image_name = $_FILES['productImages']['name'][$i];
-                    $tmp = $_FILES['productImages']['tmp_name'][$i];
-                    $uploadPath = '../uploads/' . $image_name;
-            
-                    // Di chuyển ảnh vào thư mục lưu trữ
-                     if (move_uploaded_file($tmp, $uploadPath)) {
-                    $uploadedImages[] = $image_name; // Lưu tên ảnh vào mảng để thêm vào cơ sở dữ liệu sau này
-                    } else {
-                    echo "Không thể tải lên ảnh $image_name.<br>";
-                    }
+                        if (empty($mo_ta)) {
+                            $loi_mo_ta = "Mô tả không được để trống";
+                            $dem++;
                         }
-        
-                    // Thêm  ảnh vào db
-                    foreach ($uploadedImages as $image) {
-                        them_anh_san_pham($id_san_pham, $image);
+                    
+                        if ($danh_muc == 0) {
+                            $loi_danh_muc = "Hãy chọn 1 danh mục";
+                            $dem++;
+                        }
+                    
+                        // Validate biến thể sản phẩm
+                        $sizes = $_POST['size'];
+                        $importPrices = $_POST['importPrice'];
+                        $sales = $_POST['Sale'];
+                        $salePrices = $_POST['salePrice'];
+                        $quantities = $_POST['quantity'];
+                    
+                        for ($i = 0; $i < count($sizes); $i++) {
+                            if (empty($sizes[$i])) {
+                                $loi_size = "Hãy chọn size cho biến thể thứ " . ($i + 1);
+                                $dem++;
+                            }
+                            if (empty($importPrices[$i])) {
+                                $loi_gia_nhap = "Giá nhập không được để trống cho biến thể thứ " . ($i + 1);
+                                $dem++;
+                            }
+                            if (empty($sales[$i])) {
+                                $loi_sale = "Giá sale không được để trống cho biến thể thứ " . ($i + 1);
+                                $dem++;
+                            }
+                            if (empty($salePrices[$i])) {
+                                $loi_gia_ban = "Giá bán không được để trống cho biến thể thứ " . ($i + 1);
+                                $dem++;
+                            }
+                            if (empty($quantities[$i])) {
+                                $loi_so_luong = "Số lượng không được để trống cho biến thể thứ " . ($i + 1);
+                                $dem++;
+                            }
+                        }
+                    
+                        // Validate ảnh sản phẩm
+                        $numFiles = count($_FILES['productImages']['name']);
+                        if ($numFiles == 0) {
+                            $loi_anh = "Bạn phải chọn ít nhất một ảnh sản phẩm";
+                            $dem++;
+                        } else {
+                            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                            for ($i = 0; $i < $numFiles; $i++) {
+                                $fileType = $_FILES['productImages']['type'][$i];
+                                $fileSize = $_FILES['productImages']['size'][$i];
+                    
+                                if (!in_array($fileType, $allowedTypes)) {
+                                    $loi_anh = "Chỉ chấp nhận các định dạng ảnh JPG, PNG, GIF";
+                                    $dem++;
+                                    break;
+                                }
+                    
+                                if ($fileSize > 5 * 1024 * 1024) { // 5MB
+                                    $loi_anh = "Kích thước ảnh không được vượt quá 5MB";
+                                    $dem++;
+                                    break;
+                                }
+                            }
+                        }
+                    
+                        if ($dem == 0) {
+                            // Thêm sản phẩm
+                            them_san_pham($ten_san_pham, $mo_ta, $danh_muc);
+                            $id_san_pham = tim_idsp();
+                    
+                            // Xử lý biến thể sản phẩm
+                            for ($i = 0; $i < count($sizes); $i++) {
+                                $size = $sizes[$i];
+                                $gia_nhap = $importPrices[$i];
+                                $sale = $sales[$i];
+                                $gia_ban = $salePrices[$i];
+                                $so_luong = $quantities[$i];
+                                
+                                them_bien_the_san_pham($id_san_pham, $size, $gia_nhap, $gia_ban, $sale, $so_luong);
+                            }
+                    
+                            // Xử lý ảnh sản phẩm
+                            $uploadedImages = array();
+                            for ($i = 0; $i < $numFiles; $i++) {
+                                $image_name = $_FILES['productImages']['name'][$i];
+                                $tmp = $_FILES['productImages']['tmp_name'][$i];
+                                $uploadPath = '../uploads/' . $image_name;
+                    
+                                if (move_uploaded_file($tmp, $uploadPath)) {
+                                    $uploadedImages[] = $image_name; // Lưu tên ảnh vào mảng để thêm vào cơ sở dữ liệu sau này
+                                } else {
+                                    echo "Không thể tải lên ảnh $image_name.<br>";
+                                }
+                            }
+                    
+                            // Thêm ảnh vào db
+                            foreach ($uploadedImages as $image) {
+                                them_anh_san_pham($id_san_pham, $image);
+                            }
+                    
+                            // Thông báo thành công
+                            $thongbao = "Thêm sản phẩm thành công";
+                        }
                     }
-        
-                    // Thông báo thành công
-                    $thongbao = "Thêm sản phẩm thành công";
-
-                    }
-                    $danh_muc =tat_ca_danh_muc();
-                    $size =tat_ca_size();
+                    
+                    $danh_muc = tat_ca_danh_muc();
+                    $size = tat_ca_size();
                     include 'view/sanpham/add.php';
                     break;
+                
+                
             case 'xoa_san_pham':
             if(isset($_GET['id_xoasp'])){
                 $id_san_pham= $_GET['id_xoasp'];
