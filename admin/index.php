@@ -18,7 +18,7 @@ if(isset($_GET['act'])){
                 if(isset($_POST['them_btn'])) {
                     $ten_danh_muc = $_POST['ten_danh_muc'];
                     
-                    if(empty($ten_danh_muc)) { 
+                    if(empty($ten_danh_muc)) {
                         $thongbao = "Vui lòng nhập tên danh mục";
                     } else {
                         $check = check_danh_muc($ten_danh_muc);
@@ -264,25 +264,7 @@ if(isset($_GET['act'])){
                         if ($numFiles == 0) {
                             $loi_anh = "Bạn phải chọn ít nhất một ảnh sản phẩm";
                             $dem++;
-                        } else {
-                            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                            for ($i = 0; $i < $numFiles; $i++) {
-                                $fileType = $_FILES['productImages']['type'][$i];
-                                $fileSize = $_FILES['productImages']['size'][$i];
-                    
-                                if (!in_array($fileType, $allowedTypes)) {
-                                    $loi_anh = "Chỉ chấp nhận các định dạng ảnh JPG, PNG, GIF";
-                                    $dem++;
-                                    break;
-                                }
-                    
-                                if ($fileSize > 5 * 1024 * 1024) { // 5MB
-                                    $loi_anh = "Kích thước ảnh không được vượt quá 5MB";
-                                    $dem++;
-                                    break;
-                                }
-                            }
-                        }
+                        } 
                     
                         if ($dem == 0) {
                             // Thêm sản phẩm
@@ -329,7 +311,6 @@ if(isset($_GET['act'])){
                     include 'view/sanpham/add.php';
                     break;
                 
-                
             case 'xoa_san_pham':
             if(isset($_GET['id_xoasp'])){
                 $id_san_pham= $_GET['id_xoasp'];
@@ -359,10 +340,78 @@ if(isset($_GET['act'])){
                 case 'chi_tiet_san_pham':
                     $id_san_pham = isset($_GET['id_sp']) ? $_GET['id_sp'] : null;
                     $one_san_pham = show_1_san_pham($id_san_pham);
-                    include 'view/sanpham/deltai.php';
-                    
+                    include 'view/sanpham/deltai.php';                  
                     break;
+                case 'sua_san_pham':
+                if(isset($_GET['id_ssp'])){
+                    $id_san_pham = $_GET['id_ssp'];
+                    $one_san_pham = show_1_san_pham($id_san_pham);
+                    $so_luong_bien_the = count($one_san_pham['sizes']);
+                    extract($one_san_pham);
+                }
+                $danh_muc = tat_ca_danh_muc();
+                $size = tat_ca_size();
+                include 'view/sanpham/fix.php';   
+                break;
+                case 'update_san_pham':
+                    if(isset($_POST['sua_btn'])){
+                        $id_san_pham = $_POST['id_san_pham'];
+                        $ten_san_pham = $_POST['ten_san_pham'];
+                        $mo_ta = $_POST['mo_ta'];
+                        $danh_muc = $_POST['danh_muc'];
+                        $sizes = $_POST['size'];
+                        $importPrices = $_POST['importPrice'];
+                        $sales = $_POST['Sale'];
+                        $salePrices = $_POST['salePrice'];
+                        $quantities = $_POST['quantity'];
                 
+                        // Sửa sản phẩm
+                        sua_san_pham($id_san_pham, $ten_san_pham, $mo_ta, $danh_muc);
+                
+                        // Xử lý biến thể sản phẩm
+                        for ($i = 0; $i < count($sizes); $i++) {
+                            $size = $sizes[$i];
+                            $gia_nhap = $importPrices[$i];
+                            $sale = $sales[$i];
+                            $gia_ban = $salePrices[$i];
+                            $so_luong = $quantities[$i];
+                
+                            // Kiểm tra biến thể đã tồn tại chưa
+                            if (bien_the_da_ton_tai($id_san_pham, $size)) {
+                                // Sửa biến thể
+                                sua_bien_the_san_pham($id_san_pham, $size, $gia_nhap, $gia_ban, $sale, $so_luong);
+                            } else {
+                                // Thêm biến thể mới
+                                them_bien_the_san_pham($id_san_pham, $size, $gia_nhap, $gia_ban, $sale, $so_luong);
+                            }
+                        }
+                
+                          // Xử lý upload ảnh
+        $numFiles = count($_FILES['productImages']['name']);
+        $uploadedImages = array();
+
+        for ($i = 0; $i < $numFiles; $i++) {
+            $image_name = $_FILES['productImages']['name'][$i];
+            $tmp = $_FILES['productImages']['tmp_name'][$i];
+            $uploadPath = '../uploads/' . $image_name;
+
+            if (move_uploaded_file($tmp, $uploadPath)) {
+                $uploadedImages[] = $image_name; // Lưu tên ảnh vào mảng để thêm vào cơ sở dữ liệu sau này
+            } else {
+                echo "Không thể tải lên ảnh $image_name.<br>";
+            }
+        }
+
+        // Thêm ảnh vào db
+        foreach ($uploadedImages as $image) {
+            them_anh_san_pham($id_san_pham, $image);
+        }
+                
+                        // Thông báo thành công
+                        $thongbao = "Thêm sản phẩm thành công";
+                        header('Location:index.php?act=san_pham');
+                    }
+                    break;
         default:
         include 'view/main.php';
             break;
@@ -403,8 +452,4 @@ ob_end_flush();
  function khoi_phuc_san_pham(){
     return confirm('Bạn muốn khôi phục sản phẩm này chứ?')
  }
-<<<<<<< HEAD
 </script>
-=======
-</script>
->>>>>>> e7837b1b405ea342f146a0b16c6ef664742f679e
