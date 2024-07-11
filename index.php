@@ -9,7 +9,7 @@ if(isset($_GET['act'])){
         
         include 'view/dangnhap.php';
         break;
-        case 'dang_ky':
+        
             case 'dang_ky':
                 $dem_loi = 0;
                 $loi_ten = $loi_email = $loi_mat_khau =$loi_nhap_lai_mat_khau = "";
