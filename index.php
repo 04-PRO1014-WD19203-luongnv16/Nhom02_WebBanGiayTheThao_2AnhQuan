@@ -1,57 +1,119 @@
-<?php
-    include 'models/pdo.php';
-    include 'models/taikhoan.php';
-    include 'view/header.php';
-    if (isset($_GET['act'])) {
-        $act = $_GET['act'];
-        switch ($act) {
-            case 'dang_ky':
-                    $dem_loi = 0;
-                    $loi_ten = $loi_email = $loi_mat_khau = $loi_nhap_lai_mat_khau = "";
-                if (isset($_POST['dang_ky_btn'])) {
-                    $ten_dang_nhap = $_POST['ten_dang_nhap'];
-                    $email = $_POST['email'];
-                    $mat_khau = $_POST['mat_khau'];
-                    $nhap_lai_mat_khau = $_POST['nhap_lai_mat_khau'];
-                    $trang_thai = 0;
-                    $vai_tro = 0;
+<?php 
+session_start();
+ob_start();
+include '../models/pdo.php';
+include '../models/danhmuc.php';
+include '../models/size.php';
+include '../models/sanpham.php';
+include 'view/header.php';
 
-                    // Validate
-                    if (empty($ten_dang_nhap)) {
-                        $loi_ten = "Không được để trống";
-                        $dem_loi ++;
-                    }
-                    if (empty($email)) {
-                        $loi_email = "Không được để trống";
-                        $dem_loi ++;
-                    }
-                    if (empty($mat_khau)) {
-                        $loi_mat_khau = "Hãy nhập lại mật khẩu";
-                        $dem_loi ++;
-                    }
-                    if (empty($nhap_lai_mat_khau)) {
-                        $loi_nhap_lai_mat_khau = "Không được để trống";
-                        $dem_loi ++;
-                    }
-                    if ($mat_khau != $nhap_lai_mat_khau) {
-                        $loi_nhap_lai_mat_khau = "Mật khẩu không trùng khớp";
-                        $dem_loi ++;
-                    }
-                    if ($dem_loi == 0) {
-                        dang_ky_user($ten_dang_nhap, $mat_khau, $email, $trang_thai, NULL, NULL, NULL, $vai_tro);
-                        $thongbao = "Đăng ký tài khoản thành công";
-                    } else {
-                        $thongbao = "Lỗi nhập liệu, đăng ký không thành công";
-                    }
-                }
-                include 'view/dangky.php';
-                break;
-            default:
-                include 'view/main.php';
-                break;
-        }
-    } else {
-        include 'view/main.php';
+if (isset($_GET['act'])) {
+    $act = $_GET['act'];
+    switch ($act) {
+        // Danh mục
+        case 'danh_muc':
+
+            break;
+        case 'them_danh_muc':
+
+            break;
+        case 'xoa_danh_muc':
+
+            break;
+        case 'danh_muc_da_xoa':
+
+            break;
+        case 'khoi_phuc_danh_muc':
+
+            break;
+        case 'khoi_phuc_toan_bo_danh_muc':
+            
+            break;
+        case 'sua_danh_muc':
+
+            break;
+        case 'update_danh_muc':
+
+            break;
+        case 'size':
+
+            break;
+        case 'them_size':
+
+            break;
+        case 'xoa_size':
+
+            break;
+        case 'size_da_xoa':
+
+            break;
+        case 'khoi_phuc_size':
+
+            break;
+        case 'khoi_phuc_toan_bo_size':
+
+            break;
+        case 'sua_size':
+
+            break;
+        case 'update_size':
+
+            break;
+        case 'san_pham':
+
+            break;
+        case 'them_san_pham':
+
+            break;
+        case 'xoa_san_pham':
+
+            break;
+        case 'san_pham_da_xoa':
+
+            break;
+        case 'khoi_phuc_san_pham':
+
+            break;
+        default:
+            include 'view/main.php';
+            break;
     }
-    include 'view/footer.php';
+} else {
+    include 'view/main.php';
+}
+
+include 'view/footer.php';
+ob_end_flush();
 ?>
+
+<script>
+function xoa_danh_muc() {
+    return confirm('Bạn muốn xóa danh mục này chứ?');
+}   
+function khoi_phuc_danh_muc() {
+    return confirm('Bạn muốn khôi phục danh mục này chứ?');
+} 
+function khoi_phuc_toan_bo_danh_muc() {
+    return confirm('Bạn muốn khôi phục toàn bộ danh mục không?');
+} 
+
+function xoa_size() {
+    return confirm('Bạn muốn xóa size này không?');
+}
+
+function khoi_phuc_size() {
+    return confirm('Bạn muốn khôi phục size này không?');
+}
+
+function khoi_phuc_toan_bo_size() {
+    return confirm('Bạn muốn khôi phục toàn bộ size không?');
+}
+
+// Sản phẩm
+function xoa_san_pham() {
+    return confirm('Bạn muốn xóa sản phẩm này chứ?');
+}
+function khoi_phuc_san_pham() {
+    return confirm('Bạn muốn khôi phục sản phẩm này chứ?');
+}
+</script>
