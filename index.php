@@ -19,7 +19,10 @@ if (isset($_GET['act'])) {
             // Your code for 'dang_ky'
             break;
         case 'dang_xuat':
-            // Your code for 'dang_xuat'
+             if(isset($_SESSION['user'])){
+            unset($_SESSION['user']);
+            header('location:index.php');
+        }
             break;
         case 'cua_hang':
             // Your code for 'cua_hang'
