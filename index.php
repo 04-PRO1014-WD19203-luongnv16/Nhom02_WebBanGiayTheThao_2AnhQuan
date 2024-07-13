@@ -42,10 +42,10 @@ if (isset($_GET['act'])) {
             include 'view/dangnhap.php';
             break;
         case 'dang_ky':
-            // Your code for 'dang_ky'
+            
             break;
         case 'dang_xuat':
-            // Your code for 'dang_xuat'
+            
             break;
         case 'cua_hang':
             $iddm = 0;
@@ -58,16 +58,16 @@ if (isset($_GET['act'])) {
             include 'view/cuahang.php';
             break;
         case 'chi_tiet_san_pham':
-            // Your code for 'chi_tiet_san_pham'
+            
             break;
         case 'them_vao_gio_hang':
-            // Your code for 'them_vao_gio_hang'
+            
             break;
         case 'view_gio_hang':
-            // Your code for 'view_gio_hang'
+            
             break;
         case 'xoa_toan_bo_gio_hang':
-            // Your code for 'xoa_toan_bo_gio_hang'
+            
             break;
         default:
             $iddm = 0;
