@@ -13,19 +13,25 @@
                                 <div class="form-group">
                                     <label for="productName">Tên sản phẩm</label>
                                     <input name="ten_san_pham" type="text" class="form-control" id="productName" placeholder="Nhập tên sản phẩm">
+                                    <span style="color:red;"><?php if(isset($loi_ten)){
+                                echo $loi_ten;}else {
+                               $loi_ten = "";}?></span>
                                 </div>
 
                                 <!-- Description -->
                                 <div class="form-group">
                                     <label for="productDescription">Mô tả</label>
                                     <textarea name="mo_ta" class="form-control" id="productDescription" rows="3" placeholder="Nhập mô tả sản phẩm"></textarea>
+                                    <span style="color:red;"><?php if(isset($loi_mo_ta)){
+                                echo $loi_mo_ta;}else {
+                               $loi_mo_ta = "";}?></span>
                                 </div>
 
                                 <!-- Category -->
                                 <div class="form-group">
                                     <label for="productCategory">Danh mục</label>                                  
                                     <select name="danh_muc" class="form-control" id="productCategory">
-                                        <option value="">Chọn danh mục</option>
+                                        <option value="0">Chọn danh mục</option>
                                         <?php 
                                     foreach ($danh_muc as $key => $dm) {
                                         ?>
@@ -34,14 +40,19 @@
                                         <?php
                                     }
                                     ?>
-                                        
                                     </select>
+                                    <span style="color:red;"><?php if(isset($loi_danh_muc)){
+                                echo $loi_danh_muc;}else {
+                               $loi_danh_muc = "";}?></span> 
                                 </div>
 
                                 <!-- Product Image -->
                                 <div class="form-group">
                                     <label for="productImage">Ảnh sản phẩm</label>
                                     <input name="productImages[]" type="file" class="form-control-file" id="productImage" multiple>
+                                    <span style="color:red;"><?php if(isset($loi_anh)){
+                                echo $loi_anh;}else {
+                               $loi_anh = "";}?></span> 
                                 </div>
 
                                 <!-- Product Variants -->
@@ -72,19 +83,40 @@
                                     }
                                     ?>
                                                     </select>
+                                                    <span style="color:red;"><?php if(isset($loi_size)){
+                                echo $loi_size;}else {
+                               $loi_size = "";}?></span> 
                                                 </td>
                                           
-                                                <td><input type="number" class="form-control" name="importPrice[]" placeholder="Giá nhập"></td>
-                                                <td><input type="number" class="form-control" name="Sale[]" placeholder="Sale"></td>
-                                                <td><input type="number" class="form-control" name="salePrice[]" placeholder="Giá bán"></td>
-                                                <td><input type="number" class="form-control" name="quantity[]" placeholder="Số lượng"></td>
+                                                <td><input type="number" class="form-control" name="importPrice[]" placeholder="Giá nhập">
+                                                <span style="color:red;"><?php if(isset($loi_gia_nhap)){
+                                echo $loi_gia_nhap;}else {
+                               $loi_gia_nhap = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="Sale[]" placeholder="Sale">
+                                                <span style="color:red;"><?php if(isset($loi_sale)){
+                                echo $loi_sale;}else {
+                               $loi_sale = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="salePrice[]" placeholder="Giá bán">
+                                                <span style="color:red;"><?php if(isset($loi_gia_ban)){
+                                echo $loi_gia_ban;}else {
+                               $loi_gia_ban = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="quantity[]" placeholder="Số lượng">
+                                                <span style="color:red;"><?php if(isset($loi_so_luong)){
+                                echo $loi_so_luong;}else {
+                               $loi_so_luong = "";}?></span>
+                                            </td>
                                                 <td>
                                                    
                                                     <button type="button" class="btn btn-danger btn-sm removeVariantRow">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </td>
+                                              
                                             </tr>
+                                        
                                         </tbody>
                                     </table>
                                     <button type="button" class="btn btn-success btn-sm addVariantRow">
@@ -114,7 +146,7 @@
         $('.addVariantRow').click(function() {
             var newRow = `
                 <tr>
-                  <td>
+                                                <td>
                                                     <select class="form-control" name="size[]">
                                                         <option value="">Chọn Size</option>
                                                         <?php 
@@ -126,18 +158,40 @@
                                     }
                                     ?>
                                                     </select>
+                                                    <span style="color:red;"><?php if(isset($loi_size)){
+                                echo $loi_size;}else {
+                               $loi_size = "";}?></span> 
                                                 </td>
-             
-                    <td><input type="number" class="form-control" name="importPrice[]" placeholder="Giá nhập"></td>
-                     <td><input type="number" class="form-control" name="Sale[]" placeholder="Sale"></td>
-                    <td><input type="number" class="form-control" name="salePrice[]" placeholder="Giá bán"></td>
-                    <td><input type="number" class="form-control" name="quantity[]" placeholder="Số lượng"></td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm removeVariantRow">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </td>
-                </tr>
+                                          
+                                                <td><input type="number" class="form-control" name="importPrice[]" placeholder="Giá nhập">
+                                                <span style="color:red;"><?php if(isset($loi_gia_nhap)){
+                                echo $loi_gia_nhap;}else {
+                               $loi_gia_nhap = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="Sale[]" placeholder="Sale">
+                                                <span style="color:red;"><?php if(isset($loi_sale)){
+                                echo $loi_sale;}else {
+                               $loi_sale = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="salePrice[]" placeholder="Giá bán">
+                                                <span style="color:red;"><?php if(isset($loi_gia_ban)){
+                                echo $loi_gia_ban;}else {
+                               $loi_gia_ban = "";}?></span>
+                                            </td>
+                                                <td><input type="number" class="form-control" name="quantity[]" placeholder="Số lượng">
+                                                <span style="color:red;"><?php if(isset($loi_so_luong)){
+                                echo $loi_so_luong;}else {
+                               $loi_so_luong = "";}?></span>
+                                            </td>
+                                                <td>
+                                                   
+                                                    <button type="button" class="btn btn-danger btn-sm removeVariantRow">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                              
+                                            </tr>
+                                        
             `;
             $('#variantTable').append(newRow);
         });
