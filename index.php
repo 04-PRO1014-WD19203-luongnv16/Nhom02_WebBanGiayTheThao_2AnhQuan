@@ -7,6 +7,7 @@ include 'models/sanpham.php';
 include 'models/danhmuc.php';
 include 'models/giohang.php';
 include 'models/size.php';
+include 'models/hoadon.php';
 include 'view/header.php';
 
 if (isset($_GET['act'])) {
