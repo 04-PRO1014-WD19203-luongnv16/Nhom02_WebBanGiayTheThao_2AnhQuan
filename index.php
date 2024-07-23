@@ -7,6 +7,7 @@ include 'models/sanpham.php';
 include 'models/danhmuc.php';
 include 'models/giohang.php';
 include 'models/size.php';
+include 'models/hoadon.php';
 include 'view/header.php';
 
 if (isset($_GET['act'])) {
@@ -112,21 +113,11 @@ if (isset($_GET['act'])) {
             include 'view/cuahang.php';
             break;
         case 'chi_tiet_san_pham':
-            $id_bien_the =0;
             if (isset($_GET['id_ctsp'])) {
                 $id_san_pham = $_GET['id_ctsp'];
                 $one_san_pham = show_1_san_pham($id_san_pham);
-            }
-            
-            // Kiểm tra nếu người dùng chọn một size mới
-            if (isset($_GET['id_size'])) {
-                $id_size = $_GET['id_size'];    
-                $gia_size = tim_gia_bien_the($id_san_pham,$id_size);
-                $so_luong =tim_so_luong_bien_the($id_san_pham,$id_size);
-                $id_bien_the = tim_id_bien_the($id_san_pham,$id_size);             
-            }
-     
-            $size = tat_ca_size();
+                update_view($id_san_pham);
+            }  
             include 'view/chitietsanpham.php';
             break;
         case 'them_vao_gio_hang':
