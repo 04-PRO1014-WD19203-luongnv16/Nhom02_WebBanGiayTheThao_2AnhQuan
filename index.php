@@ -186,14 +186,123 @@ if (isset($_GET['act'])) {
             include 'view/viewgiohang.php';
             break;
         case 'thanh_toan':
+         if(isset($_POST['thanh_toan_btn'])){
+                $tong_gio_hang= $_POST['tong_gio_hang'];
+                $sale_of= $_POST['sale_of'];
+                $id_bien_the= $_POST['id_bien_the'];
+                $size_name= $_POST['size_name'];
+                $hinh_anh= $_POST['hinh_anh'];
+                $so_luong= $_POST['so_luong'];
+                $id_tai_khoan= $_POST['id_tai_khoan'];
+               
+                #lưu tạm vào ss
+                $_SESSION['hoa_don'] = [
+                    'tong_gio_hang' => $tong_gio_hang,
+                    'sale_of' => $sale_of,
+                    'tai_khoan' => $id_tai_khoan,
+                    'bien_the' => []
+                ];
+                
+                foreach ($id_bien_the as $key => $id_bt) {
+                    $ten_san_pham =tim_ten_san_pham($id_bt);
+                    $size_value = $_POST['size_name'][$key];
+                    $_SESSION['hoa_don']['bien_the'][] = [
+                        'id_bien_the' => $id_bt,
+                        'so_luong' => $so_luong[$key],
+                       'ten_san_pham' => $ten_san_pham,
+                        'size_name' => $size_name[$key],
+                        'hinh_anh' => $hinh_anh[$key]
+                    ];
+                }
+                
+            }
+            include 'view/thanhtoan.php';
         break;
          case 'xac_nhan':
+          if (isset($_POST['dat_hang_btn'])) {
+                    $bill = $_SESSION['hoa_don'];
+                    $tong_gio_hang = $bill['tong_gio_hang'];
+                    $ten = isset($_POST['ten_dang_nhap']) ? $_POST['ten_dang_nhap'] : '';
+                    $dia_chi = isset($_POST['dia_chi']) ? $_POST['dia_chi'] : '';
+                    $sdt = isset($_POST['sdt']) ? $_POST['sdt'] : '';
+                    $email = isset($_POST['email']) ? $_POST['email'] : '';
+                    $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    $ngay_tao_don = date('Y-m-d H:i:s'); // Điền giá trị thích hợp
+                    $phuong_thuc_thanh_toan = isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 0 ? "Thanh toán khi nhận hàng" : "Thanh toán online";
+                    $trang_thai_thanh_toan = isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 1 ? "Đã thanh toán" : "Chưa thanh toán";
+                    $ma_hoa_don = 'DHSH2AQ' . substr(uniqid(), -10);
+                    $trang_thai_don = 0;
+            
+                    // Lưu dữ liệu đơn hàng vào session
+                    $_SESSION['thanh_toan'] = array(
+                        'id_tai_khoan' => $id_tai_khoan,
+                        'tong_gio_hang' => $tong_gio_hang,
+                        'ten' => $ten,
+                        'ma_hoa_don' => $ma_hoa_don,
+                        'email' => $email,
+                        'sdt' => $sdt,
+                        'dia_chi' => $dia_chi,
+                        'trang_thai_thanh_toan' => $trang_thai_thanh_toan,
+                        'ngay_tao_don' => $ngay_tao_don,
+                        'phuong_thuc_thanh_toan' => $phuong_thuc_thanh_toan,
+                        'trang_thai_don' => $trang_thai_don,
+                        'bill' => $bill
+                    );
+            
+                    // Xử lý thanh toán
+                    if (isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 1) {
+                        // Chuyển đến trang thanh toán online
+                        header('Location:index.php?act=trang_online');
+                        exit();
+                    } else {
+                        // Thêm thông tin đơn hàng vào cơ sở dữ liệu
+                        them_hoa_don($id_tai_khoan, $tong_gio_hang, $ten, $ma_hoa_don, $email, $sdt, $dia_chi, 0, $trang_thai_thanh_toan, $ngay_tao_don, $phuong_thuc_thanh_toan, $trang_thai_don);
+                        $id_chi_tiet_don_hang = tim_id();
+            
+                        # Lấy ra chi tiết các biến thể
+                        foreach ($bill['bien_the'] as $bien_the) {
+                            $id_bien_the = $bien_the['id_bien_the'];
+                            $so_luong = $bien_the['so_luong'];
+                            $hinh_anh = $bien_the['hinh_anh'];
+                            $size_name = $bien_the['size_name'];
+                            $ten_san_pham = $bien_the['ten_san_pham'];
+                            // Thêm chi tiết đơn hàng
+                            them_hoa_don_chi_tiet($id_chi_tiet_don_hang, $id_bien_the, $ten_san_pham, $so_luong, $hinh_anh, $size_name, $tong_gio_hang);
+                            cap_nhat_so_luong($id_bien_the, $so_luong);
+                            xoa_toan_bo_gio_hang($id_tai_khoan, $id_bien_the);
+                        }
+            
+                        header('Location: index.php?act=trang_xac_nhan');
+                        exit();
+                    }
+                }
+                header('Location: index.php?act=trang_xac_nhan');
           break;
            case 'trang_xac_nhan':
+             if(isset($_SESSION['user'])){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    }
+                    $id_don_hang = tim_id_don();
+                    $hoa_don =show_hoa_don($id_don_hang,$id_tai_khoan);
+                    include 'view/xacnhanhoadon.php';
          break;
            case 'trang_online':
+         include 'view/atm_momo.php';
          break;
          case 'don_hang':
+         if(isset($_SESSION['user'])){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    }
+                    if(isset($_GET['da_nhan'])){
+                        $id_don_hang = $_GET['da_nhan'];
+                        update_da_nhan($id_don_hang);
+                    }
+                    if(isset($_GET['huy_don'])){
+                        $id_don_hang = $_GET['huy_don'];
+                        update_huy_don($id_don_hang);
+                    }
+                    $hoa_don =show_all_hoa_don_user($id_tai_khoan);
+                    include 'view/donhang.php';
             break;
         default:
             $iddm = 0;
