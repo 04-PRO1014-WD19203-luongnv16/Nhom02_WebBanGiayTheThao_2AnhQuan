@@ -185,6 +185,16 @@ if (isset($_GET['act'])) {
             $gio_hang =   show_gio_hang($id_tai_khoan);
             include 'view/viewgiohang.php';
             break;
+        case 'thanh_toan':
+        break;
+         case 'xac_nhan':
+          break;
+           case 'trang_xac_nhan':
+         break;
+           case 'trang_online':
+         break;
+         case 'don_hang':
+            break;
         default:
             $iddm = 0;
             $san_pham = tat_ca_san_pham($iddm);
