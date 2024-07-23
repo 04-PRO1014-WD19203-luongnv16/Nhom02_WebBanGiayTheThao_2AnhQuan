@@ -166,10 +166,24 @@ if (isset($_GET['act'])) {
             break;
         case 'view_gio_hang':
               if(isset($_SESSION['user']['id_tai_khoan'])){
-                $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
-                 $gio_hang =   show_gio_hang($id_tai_khoan);
-            }
-            include 'view/viewgiohang.php';
+                    if (isset($_GET['tang'])) {
+                        $id_bien_the = $_GET['tang'];
+                        tang_so_luong($id_bien_the);
+
+                    }elseif(isset($_GET['giam'])){
+                    $id_bien_the= $_GET['giam'];
+                    giam_so_luong($id_bien_the);
+                    }
+                    $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    $gio_hang =   show_gio_hang($id_tai_khoan);
+                    $dem_gio = dem_gio_hang($id_tai_khoan);
+                    if($dem_gio >= 3){
+                        $sale_of = 10;
+                    }else{
+                        $sale_of = 0;
+                    }
+                }
+                include 'view/viewgiohang.php';
             break;
         case 'xoa_toan_bo_gio_hang':
               $id_bien_the = 0;
