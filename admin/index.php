@@ -192,7 +192,117 @@ if(isset($_GET['act'])){
             
                 $size = tat_ca_size();
                 include 'view/size/fix.php';
-                break;   
+                break;
+                #giam_gia
+                case 'giam_gia':
+                    $giam_gia = tat_ca_ma_giam_gia();
+                    include 'view/giamgia/list.php';
+                    break;
+                case 'xoa_giam_gia':
+                    if(isset($_GET['id_giam_gia'])){
+                        $id_giam_gia = $_GET['id_giam_gia'];
+                        xoa_ma_giam_gia($id_giam_gia);
+                        $giam_gia = tat_ca_ma_giam_gia();
+                        include 'view/giamgia/list.php';
+                    }
+                    break;
+                case 'ma_giam_gia_da_xoa':
+                    $tat_ca_ma_da_xoa = tat_ca_ma_da_xoa();
+                    include 'view/giamgia/list_delete.php';
+                    break;
+                case 'khoi_phuc_ma':
+                    if(isset($_GET['id_madx'])){
+                    $id_madx = $_GET['id_madx'];
+                    khoi_phuc_ma($id_madx);
+                    $tat_ca_ma_da_xoa = tat_ca_ma_da_xoa();
+                    include 'view/giamgia/list_delete.php';
+                    }
+                    break;
+                case 'khoi_phuc_toan_bo_ma':
+                    khoi_phuc_toan_bo_ma();
+                    $tat_ca_ma_da_xoa = tat_ca_ma_da_xoa();
+                    include 'view/giamgia/list_delete.php';
+                    break;
+                case 'sua_ma':
+                    if(isset($_GET['id_giam_gia'])){
+                        $id_giam_gia = $_GET['id_giam_gia'];
+                        $one_ma = show_1_ma($id_giam_gia);
+                    }
+                    include 'view/giamgia/fix.php';
+                    break;
+                case 'update_ma':
+                    if (isset($_POST['sua_btn'])) {
+                        $id_giam_gia = $_POST['id_giam_gia'];
+                        $ten_ma = $_POST['ten_ma'];
+                        $giam_gia = $_POST['giam_gia'];
+                        $ngay_bat_dau = $_POST['ngay_bat_dau'];
+                        $ngay_ket_thuc = $_POST['ngay_ket_thuc'];
+                        $errors = array();
+                
+                        // Validate tên mã
+                        if (empty(trim($ten_ma))) {
+                            $errors[] = "Không được để trống tên mã.";
+                        }
+                        if (empty(trim($giam_gia))) {
+                            $errors[] = "Không được để trống mã.";
+                        }
+                        // Nếu không có lỗi, cập nhật mã
+                        if (empty($errors)) {
+                            sua_ma($id_giam_gia, $ten_ma, $giam_gia, $ngay_bat_dau, $ngay_ket_thuc);
+                            header('Location: index.php?act=giam_gia');
+                            exit();
+                        } else {
+                            // Nếu có lỗi, lấy lại dữ liệu mã
+                            $one_ma = show_1_ma($id_giam_gia);
+                        }
+                    } else {
+                        // Nếu không phải là POST request, lấy thông tin mã
+                        if(isset($_GET['id_giam_gia'])){
+                        $id_giam_gia = $_GET['id_giam_gia'];
+                        $one_ma = show_1_ma($id_giam_gia);
+                        }
+                    }
+                    $giam_gia = tat_ca_ma_giam_gia();
+                    include 'view/giamgia/fix.php';
+                    break;
+                case 'them_ma':
+                    $dem = 0;
+                    $loi_ten = $loi_giam_gia = $loi_ngay_bat_dau = $loi_ngay_ket_thuc = "";
+                    $ten_ma = $giam_gia = $ngay_bat_dau = $ngay_ket_thuc = ""; // Khởi tạo biến
+                    if(isset($_POST['them_btn'])) {
+                        $ten_ma = $_POST['ten_ma'];
+                        $giam_gia = $_POST['giam_gia'];
+                        $ngay_bat_dau = $_POST['ngay_bat_dau'];
+                        $ngay_ket_thuc = $_POST['ngay_ket_thuc'];
+    
+                        if(empty($ten_ma)) {
+                            $loi_ten = "Vui lòng nhập mã";
+                            $dem++;
+                        } 
+                        if(empty($giam_gia)) {
+                            $loi_giam_gia = "Vui lòng nhập mã";
+                            $dem++;
+                        }
+                        if(empty($ngay_bat_dau)) {
+                            $loi_ngay_bat_dau = "Vui lòng chọn ngày bắt đầu";
+                        } 
+                        if(empty($ngay_bat_dau)) {
+                            $loi_ngay_ket_thuc = "Vui lòng chọn ngày kết thúc";
+                        } 
+                        else {
+                            $check = check_ma($ten_ma);
+                            
+                            if($check !== false) {
+                                $thongbao = "Mã đã tồn tại";
+                            } else {
+                                them_moi_ma($ten_ma, $giam_gia, $ngay_bat_dau, $ngay_ket_thuc);
+                                $thongbao = "Thêm thành công";
+                            }
+                        }
+                    }
+                $giam_gia = tat_ca_ma_giam_gia();
+                include 'view/giamgia/add.php';
+                    break;
         #sản phẩm--------
             case 'san_pham':
                 $iddm =0;
@@ -444,6 +554,18 @@ ob_end_flush();
 
  function khoi_phuc_toan_bo_size(){
     return confirm('Bạn muốn khôi phục toàn bộ size không?')
+ }
+ // mã giảm giá
+ function xoa_ma() {
+    return confirm('Bạn muốn xóa mã này không?')
+ }
+
+ function khoi_phuc_ma() {
+    return confirm('Bạn muốn khôi phục mã này không?')
+ }
+
+ function khoi_phuc_toan_bo_ma(){
+    return confirm('Bạn muốn khôi phục toàn bộ mã không?')
  }
  //sản phẩm
  function xoa_san_pham(){
