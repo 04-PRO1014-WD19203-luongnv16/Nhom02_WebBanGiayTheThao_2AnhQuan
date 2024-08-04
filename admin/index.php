@@ -5,11 +5,11 @@ include '../models/pdo.php';
 include '../models/danhmuc.php';
 include '../models/size.php';
 include '../models/sanpham.php';
-include '../models/hoadon.php';
-include '../models/thongke.php';
-include '../models/taikhoan.php';
-include '../models/binhluan.php';
-include '../models/giamgia.php';
+   include '../models/hoadon.php';
+    include '../models/thongke.php';
+    include '../models/taikhoan.php';
+    include '../models/binhluan.php';
+    include '../models/giamgia.php';
 include 'view/header.php';
 if(isset($_GET['act'])){
     $act = $_GET['act'];
