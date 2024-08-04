@@ -29,8 +29,10 @@ if(isset($_GET['act'])){
         break;
         case 'sua_danh_muc':
         break;
+        
         case 'update_danh_muc':
-            break;
+        break;
+        
         #size-----------
         case 'size':
             $size = tat_ca_size();
