@@ -17,11 +17,11 @@ if(isset($_GET['act'])){
     switch ($act) {
         # Danh mục
         case 'danh_muc':
-            $danh_muc = tat_ca_danh_muc();
+          $danh_muc = tat_ca_danh_muc();
             include 'view/danhmuc/list.php';
             break;
         case 'them_danh_muc':
-           if(isset($_POST['them_btn'])) {
+        if(isset($_POST['them_btn'])) {
                         $ten_danh_muc = $_POST['ten_danh_muc'];
                         
                         if(empty($ten_danh_muc)) {
@@ -41,19 +41,31 @@ if(isset($_GET['act'])){
                     include 'view/danhmuc/list.php';
             break;
         case 'xoa_danh_muc':
-           if(isset($_GET['iddm'])){
+         if(isset($_GET['iddm'])){
             $iddm = $_GET['iddm'];
             xoa_danh_muc($iddm);
             $danh_muc = tat_ca_danh_muc();
             include 'view/danhmuc/list.php';
             }
             break;
+            case 'danh_muc_da_xoa':
+            $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+            include 'view/danhmuc/list_delete.php';
+            break;
+            case 'khoi_phuc_danh_muc':
+            if(isset($_GET['id_dmdx'])){
+            $iddm = $_GET['id_dmdx'];
+            khoi_phuc_danh_muc($iddm);
+            $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+            include 'view/danhmuc/list_delete.php';
+            }
+            break;
         case 'danh_muc_da_xoa':
-           $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
+          $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
             include 'view/danhmuc/list_delete.php';
             break;
         case 'khoi_phuc_danh_muc':
-           if(isset($_GET['id_dmdx'])){
+        if(isset($_GET['id_dmdx'])){
             $iddm = $_GET['id_dmdx'];
             khoi_phuc_danh_muc($iddm);
             $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
@@ -61,19 +73,19 @@ if(isset($_GET['act'])){
             }
             break;
         case 'khoi_phuc_toan_bo_danh_muc':
-             khoi_phuc_toan_bo_danh_muc();
+         khoi_phuc_toan_bo_danh_muc();
             $danh_muc_da_xoa = tat_ca_danh_muc_da_xoa();
             include 'view/danhmuc/list_delete.php';
             break;
         case 'sua_danh_muc':
-           if(isset($_GET['idsdm'])){
+        if(isset($_GET['idsdm'])){
                 $id_danh_muc = $_GET['idsdm'];
                 $one_danh_muc =show_1_danh_muc($id_danh_muc);
             }
             include 'view/danhmuc/fix.php';
             break;
         case 'update_danh_muc':
-           if (isset($_POST['sua_btn'])) {
+        if (isset($_POST['sua_btn'])) {
                     $id_danh_muc = $_POST['id_danh_muc'];
                     $ten_danh_muc = $_POST['ten_danh_muc'];
                     $errors = array();
@@ -109,89 +121,65 @@ if(isset($_GET['act'])){
 
         # Size
         case 'size':
-            // Code for size
             break;
         case 'them_size':
-            // Code for them_size
             break;
         case 'xoa_size':
-            // Code for xoa_size
             break;
         case 'size_da_xoa':
-            // Code for size_da_xoa
             break;
         case 'khoi_phuc_size':
-            // Code for khoi_phuc_size
             break;
         case 'khoi_phuc_toan_bo_size':
-            // Code for khoi_phuc_toan_bo_size
             break;
         case 'sua_size':
-            // Code for sua_size
             break;
         case 'update_size':
-            // Code for update_size
             break;
 
         # Sản phẩm
         case 'san_pham':
-            // Code for san_pham
             break;
         case 'them_san_pham':
-            // Code for them_san_pham
             break;
         case 'xoa_san_pham':
-            // Code for xoa_san_pham
             break;
         case 'san_pham_da_xoa':
-            // Code for san_pham_da_xoa
             break;
         case 'khoi_phuc_san_pham':
-            // Code for khoi_phuc_san_pham
             break;
         case 'chi_tiet_san_pham':
-            // Code for chi_tiet_san_pham
             break;
         case 'sua_san_pham':
-            // Code for sua_san_pham
             break;
         case 'update_san_pham':
-            // Code for update_san_pham
             break;
 
         # Giảm giá
         case 'giam_gia':
-            // Code for giam_gia
             break;
         case 'xoa_giam_gia':
-            // Code for xoa_giam_gia
             break;
         case 'ma_giam_gia_da_xoa':
-            // Code for ma_giam_gia_da_xoa
             break;
         case 'khoi_phuc_ma':
-            // Code for khoi_phuc_ma
             break;
-case 'khoi_phuc_toan_bo_ma':
-            // Code for khoi_phuc_toan_bo_ma
+        case 'khoi_phuc_toan_bo_ma':
             break;
         case 'sua_ma':
-            // Code for sua_ma
             break;
         case 'update_ma':
-            // Code for update_ma
             break;
         case 'them_ma':
-            // Code for them_ma
             break;
 
         # Tài khoản
         case 'tai_khoan':
-          $all_tai_khoan = show_tai_khoan();
+         $all_tai_khoan = show_tai_khoan();
                 include 'view/taikhoan/list.php';
             break;
         case 'them_tai_khoan':
-             $loi_ten = $loi_email = $loi_mat_khau  = "";
+        $loi_ten = $loi_email = $loi_mat_khau  = "";
                 $dem = 0;
                 if(isset($_POST['them_tk_btn']) ){
                     $ten_dang_nhap = $_POST['ten_tai_khoan'];
@@ -232,18 +220,18 @@ case 'khoi_phuc_toan_bo_ma':
                 include 'view/taikhoan/add.php';
             break;
         case 'xoa_tai_khoan':
-           if(isset($_GET['id_tk'])){
+         if(isset($_GET['id_tk'])){
                 $id_tai_khoan = $_GET['id_tk'];
                 block_tai_khoan($id_tai_khoan);
             }
             header('Location:index.php?act=tai_khoan');
             break;
         case 'tai_khoan_da_khoa':
-            $all_tai_khoan_khoa = show_tai_khoan_bi_khoa();
+        $all_tai_khoan_khoa = show_tai_khoan_bi_khoa();
                 include 'view/taikhoan/listkhoa.php';
             break;
         case 'khoi_phuc_tai_khoan':
-            if(isset($_GET['id_tk'])){
+         if(isset($_GET['id_tk'])){
                     $id_tai_khoan = $_GET['id_tk'];
                     khoi_phuc_tai_khoan($id_tai_khoan);
                 }
@@ -252,35 +240,32 @@ case 'khoi_phuc_toan_bo_ma':
 
         # Đơn hàng
         case 'don_hang':
-            // Code for don_hang
             break;
         case 'chi_tiet_don':
-            // Code for chi_tiet_don
             break;
         case 'thay_doi_trang_thai_don':
-            // Code for thay_doi_trang_thai_don
             break;
 
         # Bình luận
         case 'binh_luan':
-            $binh_luan =show_binh_luan();
+          $binh_luan =show_binh_luan();
                 include 'view/binhluan/list.php.';
             break;
         case 'xem_binh_luan':
-           if(isset($_GET['id_binh_luan'])){
+        if(isset($_GET['id_binh_luan'])){
                     $id_binh_luan = $_GET['id_binh_luan'];
                     $one_binh_luan = show_chi_tiet_binh_luan($id_binh_luan);
                 }
                 include 'view/binhluan/chitiet.php.';
             break;
         case 'an_binh_luan':
-           if(isset($_GET['id_binh_luan'])){
+         if(isset($_GET['id_binh_luan'])){
                     an_binh_luan($_GET['id_binh_luan']);
                 }
                 header('Location:index.php?act=binh_luan');
             break;
         case 'binh_luan_da_xoa':
-            $binh_luan_da_xoa =show_binh_luan_da_xoa();
+         $binh_luan_da_xoa =show_binh_luan_da_xoa();
                     include 'view/binhluan/list_delete.php.';
             break;
 
