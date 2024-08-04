@@ -27,6 +27,7 @@ if(isset($_GET['act'])){
         break;
         case 'khoi_phuc_toan_bo_danh_muc':
        break;
+      case 'sua_danh_muc':
        break;
        
         case 'update_danh_muc':
