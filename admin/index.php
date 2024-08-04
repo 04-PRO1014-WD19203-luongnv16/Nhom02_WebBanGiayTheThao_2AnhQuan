@@ -249,10 +249,24 @@ if(isset($_GET['act'])){
                     include 'view/binhluan/list_delete.php.';
             break;
         default:
+
+
+
+
+
+       
            include 'view/main.php';
+       
          break;
     }
 }else{
+
+
+
+
+
+
+   
      include 'view/main.php';
 }
 include 'view/footer.php';
