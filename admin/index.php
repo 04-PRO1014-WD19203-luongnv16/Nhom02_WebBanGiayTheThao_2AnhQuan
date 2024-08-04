@@ -5,6 +5,11 @@ include '../models/pdo.php';
 include '../models/danhmuc.php';
 include '../models/size.php';
 include '../models/sanpham.php';
+   include '../models/hoadon.php';
+    include '../models/thongke.php';
+    include '../models/taikhoan.php';
+    include '../models/binhluan.php';
+    include '../models/giamgia.php';
 include 'view/header.php';
 if(isset($_GET['act'])){
     $act = $_GET['act'];
@@ -522,11 +527,65 @@ if(isset($_GET['act'])){
                         header('Location:index.php?act=san_pham');
                     }
                     break;
+            case 'giam_gia':
+         break;
+          case 'xoa_giam_gia':
+          break;
+        case 'ma_giam_gia_da_xoa':
+        break;
+        case 'khoi_phuc_ma':
+         break;
+        case 'khoi_phuc_toan_bo_ma':
+             break;
+        case 'sua_ma':
+             break;
+        case 'update_ma':
+             break;
+           case 'them_ma':
+          break;
+        case 'tai_khoan':
+         break;
+          case 'them_tai_khoan':
+            break;
+        case 'xoa_tai_khoan':
+            break;
+         case 'tai_khoan_da_khoa':
+            break;
+         case 'khoi_phuc_tai_khoan':
+            break;
+          case 'don_hang':
+            break;
+         case 'chi_tiet_don':
+            break;
+         case 'thay_doi_trang_thai_don':
+            break;
+        case 'binh_luan':
+            break;
+              case 'xem_binh_luan':
+            break;
+          case 'an_binh_luan':
+            break;
+        case 'binh_luan_da_xoa':
+            break;
         default:
+           $chua_xu_ly = dem_don_chu_xu_ly();
+        $da_xu_ly = dem_don_da_xu_ly();
+        $da_giao =  dem_don_da_giao();
+        $da_huy = dem_don_da_huy();
+        $san_pham_da_xoa = san_pham_da_khoa();
+        $san_pham_het_hang =san_pham_het_hang();
         include 'view/main.php';
+         include 'view/bieudodoanhthu.php';
             break;
     }
 }else{
+      $chua_xu_ly = dem_don_chu_xu_ly();
+            $da_xu_ly = dem_don_da_xu_ly();
+            $da_giao =  dem_don_da_giao();
+            $da_huy = dem_don_da_huy();
+            $san_pham_da_xoa = san_pham_da_khoa();
+            $san_pham_het_hang =san_pham_het_hang();
+     include 'view/bieudodoanhthu.php';
     include 'view/main.php';
 }
 
