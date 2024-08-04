@@ -17,54 +17,38 @@ if(isset($_GET['act'])){
     switch ($act) {
         # Danh mục
         case 'danh_muc':
-            // Code for danh_muc
             break;
         case 'them_danh_muc':
-            // Code for them_danh_muc
             break;
         case 'xoa_danh_muc':
-            // Code for xoa_danh_muc
             break;
         case 'danh_muc_da_xoa':
-            // Code for danh_muc_da_xoa
             break;
         case 'khoi_phuc_danh_muc':
-            // Code for khoi_phuc_danh_muc
             break;
         case 'khoi_phuc_toan_bo_danh_muc':
-            // Code for khoi_phuc_toan_bo_danh_muc
             break;
         case 'sua_danh_muc':
-            // Code for sua_danh_muc
             break;
         case 'update_danh_muc':
-            // Code for update_danh_muc
             break;
 
         # Size
         case 'size':
-            // Code for size
             break;
         case 'them_size':
-            // Code for them_size
             break;
         case 'xoa_size':
-            // Code for xoa_size
             break;
         case 'size_da_xoa':
-            // Code for size_da_xoa
             break;
         case 'khoi_phuc_size':
-            // Code for khoi_phuc_size
             break;
         case 'khoi_phuc_toan_bo_size':
-            // Code for khoi_phuc_toan_bo_size
             break;
         case 'sua_size':
-            // Code for sua_size
             break;
         case 'update_size':
-            // Code for update_size
             break;
 
         # Sản phẩm
@@ -395,19 +379,14 @@ if(isset($_GET['act'])){
 
         # Tài khoản
         case 'tai_khoan':
-            // Code for tai_khoan
             break;
         case 'them_tai_khoan':
-            // Code for them_tai_khoan
             break;
         case 'xoa_tai_khoan':
-            // Code for xoa_tai_khoan
             break;
         case 'tai_khoan_da_khoa':
-            // Code for tai_khoan_da_khoa
             break;
         case 'khoi_phuc_tai_khoan':
-            // Code for khoi_phuc_tai_khoan
             break;
 
         # Đơn hàng
@@ -471,16 +450,12 @@ if(isset($_GET['act'])){
 
         # Bình luận
         case 'binh_luan':
-            // Code for binh_luan
             break;
         case 'xem_binh_luan':
-            // Code for xem_binh_luan
             break;
         case 'an_binh_luan':
-            // Code for an_binh_luan
             break;
         case 'binh_luan_da_xoa':
-            // Code for binh_luan_da_xoa
             break;
 
         default:
