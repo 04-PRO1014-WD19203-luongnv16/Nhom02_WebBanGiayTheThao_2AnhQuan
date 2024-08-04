@@ -160,8 +160,8 @@
     <div id="collapseVoucher" class="collapse" aria-labelledby="headingVoucher" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
            
-            <a class="collapse-item" href="buttons.html">Tất cả voucher</a>
-            <a class="collapse-item" href="cards.html">Voucher đã xóa</a>
+            <a class="collapse-item" href="index.php?act=giam_gia">Tất cả voucher</a>
+            <a class="collapse-item" href="index.php?act=ma_giam_gia_da_xoa">Voucher đã xóa</a>
         </div>
     </div>
 </li>
