@@ -727,10 +727,67 @@ break;
 
         # Đơn hàng
         case 'don_hang':
+          $don_hang =show_all_hoa_don();
+                include 'view/donhang/list.php';
             break;
         case 'chi_tiet_don':
+        if(isset($_GET['id_don']) && isset($_GET['id_tk'])){
+                    $id_don_hang = $_GET['id_don'];
+                    $id_tai_khoan = $_GET['id_tk'];
+                }
+                $hoa_don =   show_hoa_don($id_don_hang);
+                include 'view/donhang/chittietdonhang.php.';
             break;
         case 'thay_doi_trang_thai_don':
+        if(isset($_POST['id_don_hang'])){
+                      $id_don_hang = $_POST['id_don_hang'];
+                      $trang_thai_giao_hang =$_POST['trang_thai_giao_hang'];
+                      thay_doi_trang_thai_don($id_don_hang,$trang_thai_giao_hang);
+                      $trang_thai_hien_tai = $_POST['trang_thai_hien_tai'];
+                      $ten_dang_nhap = $_POST['ten_dang_nhap'];
+                      $email = $_POST['email'];
+                      date_default_timezone_set('Asia/Ho_Chi_Minh');
+                      $thoi_gian = date('Y-m-d H:i:s'); 
+                      $noi_dung_thay_doi = "Từ ";
+                      switch ($trang_thai_hien_tai) {
+                        case 0: $noi_dung_thay_doi .= "Đang chờ xử lý"; 
+                        break;
+                        case 1: $noi_dung_thay_doi .= "Đang giao"; 
+                        break;
+                        case 2: $noi_dung_thay_doi .= "Đã giao"; 
+                        break;
+                        default: $noi_dung_thay_doi .= "Không xác định"; 
+                        break;
+                    }
+                    $noi_dung_thay_doi.=" --> ";
+                    switch ($trang_thai_giao_hang) {
+                        case 0: $noi_dung_thay_doi .= "Đang chờ xử lý"; 
+                        break;
+                        case 1: $noi_dung_thay_doi .= "Đang giao"; 
+                        break;
+                        case 2: $noi_dung_thay_doi .= "Đã giao";
+                         break;
+                        case 3: $noi_dung_thay_doi .= "Đã hủy"; 
+                        break;
+                        default: $noi_dung_thay_doi .= "Không xác định"; 
+                        break;
+                    }
+                      $thong_bao = "Đã đổi trạng thái";      
+                      $subject = 'Thông báo thay đổi trạng thái đơn hàng';
+                      $body = "Đơn hàng của bạn đã được thay đổi trạng thái: $noi_dung_thay_doi";
+                      sendOrderStatusEmail($email, $ten_dang_nhap, $subject, $body);
+                      
+                    }
+                    if(isset($_SESSION['user'])){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                        $ten_nguoi_thay_doi = $_SESSION['user']['ten_dang_nhap'];
+                        luu_lich_su($id_tai_khoan, $id_don_hang, $ten_nguoi_thay_doi,$thoi_gian, $noi_dung_thay_doi);
+                    }
+                 if( $trang_thai_giao_hang == 2){
+                    update_da_thanh_toan($id_don_hang);
+                 }
+                    $hoa_don =   show_hoa_don($id_don_hang);
+                    include 'view/donhang/chittietdonhang.php.';
             break;
 
         # Bình luận
