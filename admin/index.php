@@ -310,24 +310,6 @@ if(isset($_GET['act'])){
                 include 'view/danhmuc/fix.php';
             break;
 
-        # Size
-        case 'size':
-            break;
-        case 'them_san_pham':
-            break;
-        case 'xoa_size':
-break;
-        case 'size_da_xoa':
-   break;
-        case 'khoi_phuc_size':
- break;
-        case 'khoi_phuc_toan_bo_size':
- break;
-        case 'sua_size':
- break;
-        case 'update_size':
-            break;
-
         # Sản phẩm
         case 'san_pham':
       $iddm =0;
