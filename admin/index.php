@@ -794,10 +794,6 @@ if(isset($_GET['act'])){
          $binh_luan_da_xoa =show_binh_luan_da_xoa();
                     include 'view/binhluan/list_delete.php.';
             break;
-<<<<<<< HEAD
-
-=======
->>>>>>> daothianh_ph46943
         default:
             $chua_xu_ly = dem_don_chu_xu_ly();
             $da_xu_ly = dem_don_da_xu_ly();
@@ -817,11 +813,8 @@ if(isset($_GET['act'])){
     $san_pham_da_xoa = san_pham_da_khoa();
     $san_pham_het_hang =san_pham_het_hang();
     include 'view/bieudodoanhthu.php';
-<<<<<<< HEAD
     include 'view/main.php';
 }
-=======
->>>>>>> daothianh_ph46943
 
 include 'view/footer.php';
 ob_end_flush();
