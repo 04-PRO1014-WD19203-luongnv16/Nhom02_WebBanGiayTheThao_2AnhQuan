@@ -53,38 +53,12 @@ if(isset($_GET['act'])){
 
         # Sản phẩm
         case 'san_pham':
-            break;
-        case 'them_san_pham':
-            break;
-        case 'xoa_san_pham':
-            break;
-        case 'san_pham_da_xoa':
-            break;
-        case 'khoi_phuc_san_pham':
-            break;
-        case 'chi_tiet_san_pham':
-            break;
-        case 'sua_san_pham':
-            break;
-        case 'update_san_pham':
+
             break;
 
         # Giảm giá
         case 'giam_gia':
-            break;
-        case 'xoa_giam_gia':
-            break;
-        case 'ma_giam_gia_da_xoa':
-            break;
-        case 'khoi_phuc_ma':
-            break;
-        case 'khoi_phuc_toan_bo_ma':
-            break;
-        case 'sua_ma':
-            break;
-        case 'update_ma':
-            break;
-        case 'them_ma':
+
             break;
 
         # Tài khoản
@@ -101,10 +75,7 @@ if(isset($_GET['act'])){
 
         # Đơn hàng
         case 'don_hang':
-            break;
-        case 'chi_tiet_don':
-            break;
-        case 'thay_doi_trang_thai_don':
+
             break;
 
         # Bình luận
