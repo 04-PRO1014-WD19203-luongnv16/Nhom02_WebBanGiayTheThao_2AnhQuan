@@ -18,6 +18,7 @@ function check_ton_tai($email, $ten_dang_nhap) {
     return $check;
 }
 
+// commit
 #show tất cả tài khoản
 function show_tai_khoan(){
     $sql ="SELECT *FROM tai_khoan WHERE trang_thai = 0";
