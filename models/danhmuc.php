@@ -31,7 +31,7 @@ function xoa_danh_muc($id_danh_muc){
     $sql = "UPDATE danh_muc SET trang_thai = 1 WHERE id_danh_muc = '$id_danh_muc'";
     pdo_execute($sql);
 }
-
+//commit danhmuc 3
 #khôi phục  danh mục
 function khoi_phuc_danh_muc($id_danh_muc){
     $sql = "UPDATE danh_muc SET trang_thai = 0 WHERE id_danh_muc = '$id_danh_muc'";
