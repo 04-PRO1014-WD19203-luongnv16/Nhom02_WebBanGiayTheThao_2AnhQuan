@@ -5,7 +5,7 @@ function tat_ca_danh_muc(){
     $tat_ca_danh_muc = pdo_query($sql);
     return $tat_ca_danh_muc;
 }
-
+//commit dm 1
 #show 1 danh mục
 function show_1_danh_muc($id_danh_muc){
     $sql = "SELECT *FROM danh_muc WHERE trang_thai = 0 AND id_danh_muc = '$id_danh_muc'";
