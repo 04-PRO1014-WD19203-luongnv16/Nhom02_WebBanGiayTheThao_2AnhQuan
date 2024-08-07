@@ -56,7 +56,6 @@ function lay_diem_danh_gia($id_san_pham) {
     return pdo_query($sql); 
 }
 
-
 #kiểm tra đơn hàng đã được đánh giá hay chưa
 function kiem_tra_binh_luan($id_don_hang) {
     $sql = "SELECT COUNT(*) AS so_binh_luan FROM binh_luan WHERE id_don_hang = '$id_don_hang'";
