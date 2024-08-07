@@ -6,7 +6,7 @@
                     </div>
                 </div>
             </footer>
-            <!-- End of Footer -->
+         <!-- //commit footer -->
 
         </div>
         <!-- End of Content Wrapper -->
