@@ -19,7 +19,7 @@ function tat_ca_danh_muc_da_xoa(){
     $tat_ca_danh_muc_da_xoa = pdo_query($sql);
     return $tat_ca_danh_muc_da_xoa;
 }
-
+//commit danhmuc2
 #thêm mới danh mục
 function them_moi_danh_muc($ten_danh_muc){
     $sql = "INSERT INTO danh_muc(ten_danh_muc,trang_thai) VALUES('$ten_danh_muc','0')";
