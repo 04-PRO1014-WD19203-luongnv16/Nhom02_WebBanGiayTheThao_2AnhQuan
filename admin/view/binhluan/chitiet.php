@@ -116,7 +116,7 @@
     ?>
 </div>
     </div>
-
+    <!-- //commit binhluan2 -->
     <!-- Back to list button -->
     <a href="index.php?act=binh_luan" class="btn btn-primary">Quay lại danh sách bình luận</a>
 </div>
