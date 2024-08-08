@@ -5,7 +5,7 @@ function tat_ca_danh_muc(){
     $tat_ca_danh_muc = pdo_query($sql);
     return $tat_ca_danh_muc;
 }
-//commit danhmuc
+
 #show 1 danh mục
 function show_1_danh_muc($id_danh_muc){
     $sql = "SELECT *FROM danh_muc WHERE trang_thai = 0 AND id_danh_muc = '$id_danh_muc'";
@@ -19,7 +19,7 @@ function tat_ca_danh_muc_da_xoa(){
     $tat_ca_danh_muc_da_xoa = pdo_query($sql);
     return $tat_ca_danh_muc_da_xoa;
 }
-//commit danhmuc2
+
 #thêm mới danh mục
 function them_moi_danh_muc($ten_danh_muc){
     $sql = "INSERT INTO danh_muc(ten_danh_muc,trang_thai) VALUES('$ten_danh_muc','0')";
@@ -31,7 +31,7 @@ function xoa_danh_muc($id_danh_muc){
     $sql = "UPDATE danh_muc SET trang_thai = 1 WHERE id_danh_muc = '$id_danh_muc'";
     pdo_execute($sql);
 }
-//commit danhmuc 3
+
 #khôi phục  danh mục
 function khoi_phuc_danh_muc($id_danh_muc){
     $sql = "UPDATE danh_muc SET trang_thai = 0 WHERE id_danh_muc = '$id_danh_muc'";
