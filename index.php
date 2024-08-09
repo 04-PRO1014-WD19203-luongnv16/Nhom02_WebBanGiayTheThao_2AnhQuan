@@ -17,6 +17,34 @@ if(isset($_GET['act'])){
    switch ($act) {
        case 'dang_nhap':
            // Xử lý đăng nhập
+      # Kiểm tra nút đăng nhập
+        if (isset($_POST['dang_nhap_btn'])) {
+            $email = $_POST['email']; # Nếu được click thì gán email, mật khẩu
+            $mat_khau = $_POST['mat_khau'];
+            
+            # Gọi hàm kiểm tra tài khoản
+            $check = check_tai_khoan($email, $mat_khau);
+            
+            # Kiểm tra kết quả trả về của hàm check_tai_khoan
+            if ($check !== false) {
+                # Check email và mật khẩu nhập từ input có trùng với database không
+                if ($check['email'] == $email && $check['mat_khau'] == $mat_khau) {
+                    if ($check['trang_thai'] == 1) { # Kiểm tra trạng thái tài khoản
+                        $thongbao = "Tài khoản của bạn đã bị khóa";
+                    } elseif ($check['trang_thai'] == 0) { # Trạng thái = 0 nghĩa là tài khoản được phép sử dụng
+                        $_SESSION['user'] = $check;
+                        header('location:index.php');
+                        exit(); # Đảm bảo dừng thực thi script sau khi chuyển hướng
+                    }
+                } else {
+                    $thongbao = "Tài khoản hoặc mật khẩu không đúng";
+                }
+            } else {
+                $thongbao = "Tài khoản hoặc mật khẩu không đúng";
+            }
+        }
+        
+        include 'view/dangnhap.php';
            break;
        
        case 'dang_ky':
@@ -77,10 +105,33 @@ if(isset($_GET['act'])){
        
        case 'dang_xuat':
            // Xử lý đăng xuất
+         if(isset($_SESSION['user'])){
+            unset($_SESSION['user']);
+            header('location:index.php');
+        }
            break;
        
        case 'cua_hang':
            // Xử lý hiển thị cửa hàng
+      $iddm = 0;
+        $danh_muc =tat_ca_danh_muc();
+        if(isset($_GET['iddm'])){
+            $iddm = $_GET['iddm'];
+            $san_pham = tat_ca_san_pham($iddm);
+        }
+        $san_pham = tat_ca_san_pham($iddm);
+        include 'view/cuahang.php';
+        break;
+        case 'chi_tiet_san_pham':
+            
+            if (isset($_GET['id_ctsp'])) {
+                $id_san_pham = $_GET['id_ctsp'];
+                $one_san_pham = show_1_san_pham($id_san_pham);
+                $binh_luan = show_binh_luan_theo_san_pham($id_san_pham);
+                update_view($id_san_pham);
+            }  
+       
+            include 'view/chitietsanpham.php';
            break;
        
        case 'chi_tiet_san_pham':
@@ -89,14 +140,92 @@ if(isset($_GET['act'])){
        
        case 'them_vao_gio_hang':
            // Xử lý thêm vào giỏ hàng
+      if(isset($_POST['them_gio_btn'])){    
+        $id_san_pham = $_POST['id_san_pham'];   
+        $id_size = $_POST['id_size'];  
+        if(empty($id_size)){    
+        $_SESSION['thong_bao'] = "Vui lòng chọn kích thước sản phẩm.";
+        header('location:index.php?act=chi_tiet_san_pham&id_ctsp=' . $id_san_pham);
+        exit;
+        }            
+        $id_bien_the = $_POST['id_bien_the'];
+        $id_tai_khoan = $_POST['id_tai_khoan'];     
+        $so_luong_ton =tim_so_luong_bien_the($id_san_pham,$id_size);
+        $gia_size = tim_gia_bien_the($id_san_pham,$id_size);   
+        $id_bien_the = tim_id_bien_the($id_san_pham,$id_size); 
+        $so_luong = $_POST['so_luong']; 
+        $tong_gia = $so_luong * $gia_size;
+        $check =  kiem_tra_ton_tai_san_pham_trong_gio_hang($id_bien_the, $id_tai_khoan);
+        if($check !== false ){
+            $so_luong_cu = $check['so_luong'];
+            $so_luong_moi = $so_luong +   $so_luong_cu;
+            cap_nhat_so_luong_gio_hang($id_bien_the, $id_tai_khoan, $so_luong_moi,$tong_gia);         
+        }else{
+            them_vao_gio_hang($id_bien_the,$id_tai_khoan,$so_luong,$tong_gia);      
+        }
+        header('location:index.php?act=view_gio_hang');
+        exit;    
+    }elseif (isset($_POST['mua_ngay_btn'])) {
+        $id_san_pham = $_POST['id_san_pham'];   
+        $id_size = $_POST['id_size'];  
+        if(empty($id_size)){    
+        $_SESSION['thong_bao'] = "Vui lòng chọn kích thước sản phẩm.";
+        header('location:index.php?act=chi_tiet_san_pham&id_ctsp=' . $id_san_pham);
+        exit;
+        } 
+        $id_tai_khoan = $_POST['id_tai_khoan'];     
+        $so_luong_ton =tim_so_luong_bien_the($id_san_pham,$id_size);      
+        $gia_ban_ra = tim_gia_bien_the($id_san_pham,$id_size);
+        $id_bien_the = tim_id_bien_the($id_san_pham,$id_size); 
+        $so_luong = $_POST['so_luong']; 
+        $tong_gio_hang = $so_luong * $gia_ban_ra;
+        $size_name= tim_size_name($id_size);
+        $hinh_anh= tim_anh_san_pham($id_san_pham);       
+        $gia_tong_bien_the =$so_luong * $gia_ban_ra;
+             #lưu tạm vào ss
+            $_SESSION['hoa_don'] = [
+                'tong_gio_hang' => $tong_gio_hang,
+                'tai_khoan' => $id_tai_khoan,
+                'bien_the' => []
+            ];  
+            $ten_san_pham =tim_ten_san_pham($id_bien_the) ;       
+            $_SESSION['hoa_don']['bien_the'][] = [
+                    'id_bien_the' => $id_bien_the ,
+                    'so_luong' => $so_luong,
+                    'ten_san_pham' => $ten_san_pham ,
+                    'size_name' => $size_name,
+                    'hinh_anh' => $hinh_anh,
+                    'gia_tong_bien_the' => $gia_tong_bien_the,
+                ];
+        include 'view/thanhtoan.php';
+                 }    
            break;
        
        case 'view_gio_hang':
            // Xử lý hiển thị giỏ hàng
+       if(isset($_SESSION['user']['id_tai_khoan'])){
+                    if (isset($_GET['tang'])) {
+                        $id_bien_the = $_GET['tang'];
+                        tang_so_luong($id_bien_the);
+                    }elseif(isset($_GET['giam'])){
+                    $id_bien_the= $_GET['giam'];
+                    giam_so_luong($id_bien_the);
+                    }
+                    $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    $gio_hang =   show_gio_hang($id_tai_khoan);   
+                }
+                include 'view/viewgiohang.php';
            break;
        
        case 'xoa_toan_bo_gio_hang':
            // Xử lý xóa toàn bộ giỏ hàng
+       $id_bien_the = 0;
+            if(isset($_GET['idxgh'])){
+                $id_bien_the  =$_GET['idxgh'];
+            }
+            xoa_toan_bo_gio_hang($id_tai_khoan,$id_bien_the);
+            $gio_hang =   show_gio_hang($id_tai_khoan);
+            include 'view/viewgiohang.php';
            break;
        
        case 'thanh_toan':
@@ -136,6 +265,85 @@ if(isset($_GET['act'])){
        
        case 'xac_nhan':
            // Xử lý xác nhận đơn hàng
+       if (isset($_POST['dat_hang_btn'])) {
+                    $bill = $_SESSION['hoa_don'];
+                    $id_giam_gia = $_POST['discount_code'];
+                    $tong_gio_hang_tam = $bill['tong_gio_hang'];
+                    $tong_giam = 0;
+                    if ($id_giam_gia != 0) {
+                        $tong_giam =lay_gia_tri_giam_gia($id_giam_gia);
+                    }
+                    $so_tien_giam = $tong_gio_hang_tam * $tong_giam/100;
+                    $tong_gio_hang = $tong_gio_hang_tam - $so_tien_giam;
+                    $ten = isset($_POST['ten_dang_nhap']) ? $_POST['ten_dang_nhap'] : '';
+                    $dia_chi = isset($_POST['dia_chi']) ? $_POST['dia_chi'] : '';
+                    $sdt = isset($_POST['sdt']) ? $_POST['sdt'] : '';
+                    $email = isset($_POST['email']) ? $_POST['email'] : '';
+                    $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    date_default_timezone_set('Asia/Ho_Chi_Minh');
+                    $ngay_tao_don = date('Y-m-d H:i:s'); // Điền giá trị thích hợp
+                    $phuong_thuc_thanh_toan = isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 0 ? "Thanh toán khi nhận hàng" : "Thanh toán online";
+                    $trang_thai_thanh_toan = isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 1 ? "Đã thanh toán" : "Chưa thanh toán";
+                    $ma_hoa_don = 'DHSH2AQ' . substr(uniqid(), -10);
+            
+                    // Lưu dữ liệu đơn hàng vào session
+                    $_SESSION['thanh_toan'] = array(
+                        'id_tai_khoan' => $id_tai_khoan,
+                        'tong_gio_hang' => $tong_gio_hang,
+                        'ten' => $ten,
+                        'ma_hoa_don' => $ma_hoa_don,
+                        'email' => $email,
+                        'sdt' => $sdt,
+                        'dia_chi' => $dia_chi,
+                        'trang_thai_thanh_toan' => $trang_thai_thanh_toan,
+                        'ngay_tao_don' => $ngay_tao_don,
+                        'phuong_thuc_thanh_toan' => $phuong_thuc_thanh_toan,
+                        'bill' => $bill
+                    );     
+                    // Xử lý thanh toán
+                    if (isset($_POST['thanh_toan']) && $_POST['thanh_toan'] == 1) {
+                         // Thêm thông tin đơn hàng vào cơ sở dữ liệu
+                         them_hoa_don($id_tai_khoan, $tong_gio_hang, $ten, $ma_hoa_don, $email, $sdt, $dia_chi, 0, $trang_thai_thanh_toan, $ngay_tao_don, $phuong_thuc_thanh_toan);
+                         $id_chi_tiet_don_hang = tim_id();
+                         # Lấy ra chi tiết các biến thể
+                         foreach ($bill['bien_the'] as $bien_the) {
+                             $id_bien_the = $bien_the['id_bien_the'];
+                             $so_luong = $bien_the['so_luong'];
+                             $hinh_anh = $bien_the['hinh_anh'];
+                             $size_name = $bien_the['size_name'];
+                             $ten_san_pham = $bien_the['ten_san_pham'];
+                             $gia_tong_bien_the = $bien_the['gia_tong_bien_the'];
+                             // Thêm chi tiết đơn hàng
+                             them_hoa_don_chi_tiet($id_chi_tiet_don_hang, $id_bien_the, $ten_san_pham, $so_luong, $hinh_anh, $size_name,$gia_tong_bien_the, $tong_gio_hang);
+                             cap_nhat_so_luong($id_bien_the, $so_luong);
+                             xoa_toan_bo_gio_hang($id_tai_khoan, $id_bien_the);
+                         }
+                        // Chuyển đến trang thanh toán online
+                        header('Location:index.php?act=trang_online');
+                        exit();
+                    } else {
+                        // Thêm thông tin đơn hàng vào cơ sở dữ liệu
+                        them_hoa_don($id_tai_khoan, $tong_gio_hang, $ten, $ma_hoa_don, $email, $sdt, $dia_chi, 0, $trang_thai_thanh_toan, $ngay_tao_don, $phuong_thuc_thanh_toan);
+                        $id_chi_tiet_don_hang = tim_id();
+                        # Lấy ra chi tiết các biến thể
+                        foreach ($bill['bien_the'] as $bien_the) {
+                            $id_bien_the = $bien_the['id_bien_the'];
+                            $so_luong = $bien_the['so_luong'];
+                            $hinh_anh = $bien_the['hinh_anh'];
+                            $size_name = $bien_the['size_name'];
+                            $ten_san_pham = $bien_the['ten_san_pham'];
+                            $gia_tong_bien_the = $bien_the['gia_tong_bien_the'];
+                            // Thêm chi tiết đơn hàng
+                            them_hoa_don_chi_tiet($id_chi_tiet_don_hang, $id_bien_the, $ten_san_pham, $so_luong, $hinh_anh, $size_name,$gia_tong_bien_the, $tong_gio_hang);
+                            cap_nhat_so_luong($id_bien_the, $so_luong);
+                            xoa_toan_bo_gio_hang($id_tai_khoan, $id_bien_the);
+                        }
+            
+                        header('Location: index.php?act=trang_xac_nhan');
+                        exit();
+                    }
+                }
+                // header('Location: index.php?act=trang_xac_nhan');
            break;
        
        case 'trang_xac_nhan':
@@ -153,10 +361,24 @@ if(isset($_GET['act'])){
        
        case 'trang_online':
            // Xử lý thanh toán online
+       $id_don_hang = tim_id_don_ol();
+                    $don_hang = tim_hoa_don_ol($id_don_hang);
+                    extract($don_hang);
+                    include 'php/atm/atm_momo.php';
            break;
        
        case 'don_hang':
            // Xử lý hiển thị đơn hàng
+       if(isset($_SESSION['user'])){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    }
+                    if(isset($_GET['huy_don'])){
+                        $id_don_hang = $_GET['huy_don'];
+                        update_huy_don($id_don_hang);
+                    }
+                   
+                    $hoa_don =show_all_hoa_don_user($id_tai_khoan);
+                    include 'view/donhang.php';
            break;
        
        case 'chi_tiet_don':
@@ -171,12 +393,76 @@ if(isset($_GET['act'])){
             include 'view/chitietsanpham.php';
            break;
 
+      case 'danh_gia':
+           // Xử lý code đánh giá
+         if(isset($_GET['id_don'])){
+                        $id_don_hang = $_GET['id_don'];
+                    }
+                    if(isset($_SESSION['user'] )){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    }
+                    $hoa_don =   show_hoa_don($id_don_hang);
+                    $san_pham_list = [];
+                    foreach ($hoa_don as $don) {
+                        $id_chi_tiet_san_pham = $don['id_chi_tiet_san_pham'];
+                        $san_pham_info = tim_san_pham($id_chi_tiet_san_pham);
+
+                        if ($san_pham_info) {
+                            $san_pham_list[] = $san_pham_info;
+                        }
+                    }
+                   
+                    include 'view/danhgia.php';
+           break;
+
+      case 'binh_luan':
+           // Xử lý code bình luận
+       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                            if (isset($_SESSION['user'])) {
+                                $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                            }
+                    
+                            // Lấy thông tin từ form
+                            $id_san_pham_list = $_POST['id_san_pham'];
+                            $comment_list = $_POST['comment'];
+                            $diem_danh_gia_list = $_POST['diem_danh_gia'];
+                            $trang_thai = 0; // Trạng thái bình luận
+                            $id_don_hang = $_POST['id_don_hang'];
+                            date_default_timezone_set('Asia/Ho_Chi_Minh');
+                            $date = date('Y-m-d H:i:s');
+                    
+                            // Lưu từng bình luận
+                            foreach ($id_san_pham_list as $index => $id_san_pham) {
+                                $noi_dung = $comment_list[$index];
+                                $diem_danh_gia = $diem_danh_gia_list[$index];
+                                them_binh_luan($id_tai_khoan, $id_san_pham, $noi_dung, $date, $diem_danh_gia, $trang_thai,$id_don_hang);
+                            }
+                    
+                            echo "<script>
+                            alert('Bình luận của bạn đã được gửi thành công!');
+                            window.location.href = 'index.php?act=don_hang';
+                          </script>";
+                    exit();
+                        }
+           break;
+
+      case 've_chung_toi':
+           // Xử lý code về chúng tôi
+       case 've_chung_toi':
+                            include 'view/vechungtoi.php';
+           break;
        default:
            // Xử lý mặc định
+      $iddm =0;   
+    $san_pham =   tat_ca_san_pham_view($iddm);
+    include 'view/main.php';
            break;
    }
 }else{
+$iddm =0;
+    $san_pham =  tat_ca_san_pham_view($iddm);
 
+    include 'view/main.php';
 }
 include 'view/footer.php';
 ?>
