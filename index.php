@@ -17,10 +17,90 @@ if(isset($_GET['act'])){
    switch ($act) {
        case 'dang_nhap':
            // Xử lý đăng nhập
+      # Kiểm tra nút đăng nhập
+        if (isset($_POST['dang_nhap_btn'])) {
+            $email = $_POST['email']; # Nếu được click thì gán email, mật khẩu
+            $mat_khau = $_POST['mat_khau'];
+            
+            # Gọi hàm kiểm tra tài khoản
+            $check = check_tai_khoan($email, $mat_khau);
+            
+            # Kiểm tra kết quả trả về của hàm check_tai_khoan
+            if ($check !== false) {
+                # Check email và mật khẩu nhập từ input có trùng với database không
+                if ($check['email'] == $email && $check['mat_khau'] == $mat_khau) {
+                    if ($check['trang_thai'] == 1) { # Kiểm tra trạng thái tài khoản
+                        $thongbao = "Tài khoản của bạn đã bị khóa";
+                    } elseif ($check['trang_thai'] == 0) { # Trạng thái = 0 nghĩa là tài khoản được phép sử dụng
+                        $_SESSION['user'] = $check;
+                        header('location:index.php');
+                        exit(); # Đảm bảo dừng thực thi script sau khi chuyển hướng
+                    }
+                } else {
+                    $thongbao = "Tài khoản hoặc mật khẩu không đúng";
+                }
+            } else {
+                $thongbao = "Tài khoản hoặc mật khẩu không đúng";
+            }
+        }
+        
+        include 'view/dangnhap.php';
            break;
        
        case 'dang_ky':
            // Xử lý đăng ký
+      $dem_loi = 0;
+            $loi_ten = $loi_email = $loi_mat_khau =$loi_nhap_lai_mat_khau = "";
+        if(isset($_POST['dang_ky_btn'])){
+            $ten_dang_nhap = $_POST['ten_dang_nhap'];
+            $email = $_POST['email'];
+            $mat_khau = $_POST['mat_khau'];
+            $nhap_lai_mat_khau = $_POST['nhap_lai_mat_khau'];
+            $trang_thai = 0 ; //tài khoản đã kích hoạt.
+            $vai_tro = 0; // 0 là vai trò user thường.
+
+            // làm validate
+        if(empty($ten_dang_nhap)){
+            $loi_ten = "Không được để trống tên";
+            $dem_loi ++;
+        }
+        if(empty($email)){
+            $loi_email = "Không được để trống email";
+            $dem_loi ++;
+        }
+        if(empty($mat_khau)){
+            $loi_mat_khau = "Hãy nhập lại mật khẩu";
+            $dem_loi ++;
+        }
+        if (empty($nhap_lai_mat_khau)) {
+            $loi_nhap_lai_mat_khau = "Không được để trống nhập lại mật khẩu";
+            $dem_loi++;
+        }
+
+        if($mat_khau != $nhap_lai_mat_khau){
+            $loi_nhap_lai_mat_khau = "Mật khẩu không trùng khớp";
+            $dem_loi ++;
+        }
+        if($dem_loi == 0){
+            $check = check_ton_tai($email, $ten_dang_nhap) ;
+        if($check !== false){
+            if($check['email'] == $email ||  $check['ten_dang_nhap'] ==$ten_dang_nhap){
+                $thongbao = "Tài khoản đã tồn tại";
+            }else{
+                dang_ky_user($ten_dang_nhap,$mat_khau,$email,$trang_thai,NULL,NULL,NULL,$vai_tro);
+                $thongbao = "Đăng ký tài khoản thành công";
+            }
+        }else{
+            dang_ky_user($ten_dang_nhap,$mat_khau,$email,$trang_thai,NULL,NULL,NULL,$vai_tro);
+            $thongbao = "Đăng ký tài khoản thành công";
+        }
+          
+            
+        }else {
+            $thongbao = "Lỗi nhập liệu, đăng ký không thành công.";
+        }
+        }
+        include 'view/dangky.php';
            break;
        
        case 'dang_xuat':
@@ -29,6 +109,25 @@ if(isset($_GET['act'])){
        
        case 'cua_hang':
            // Xử lý hiển thị cửa hàng
+      $iddm = 0;
+        $danh_muc =tat_ca_danh_muc();
+        if(isset($_GET['iddm'])){
+            $iddm = $_GET['iddm'];
+            $san_pham = tat_ca_san_pham($iddm);
+        }
+        $san_pham = tat_ca_san_pham($iddm);
+        include 'view/cuahang.php';
+        break;
+        case 'chi_tiet_san_pham':
+            
+            if (isset($_GET['id_ctsp'])) {
+                $id_san_pham = $_GET['id_ctsp'];
+                $one_san_pham = show_1_san_pham($id_san_pham);
+                $binh_luan = show_binh_luan_theo_san_pham($id_san_pham);
+                update_view($id_san_pham);
+            }  
+       
+            include 'view/chitietsanpham.php';
            break;
        
        case 'chi_tiet_san_pham':
@@ -49,6 +148,37 @@ if(isset($_GET['act'])){
        
        case 'thanh_toan':
            // Xử lý thanh toán
+       if(isset($_POST['thanh_toan_btn'])){
+                $tong_gio_hang= $_POST['tong_gio_hang'];  
+                $id_bien_the= $_POST['id_bien_the'];
+                $size_name= $_POST['size_name'];
+                $hinh_anh= $_POST['hinh_anh'];
+                $so_luong= $_POST['so_luong'];
+                $gia_tong_bien_the =$_POST['tong_gia_i'];
+                $id_tai_khoan= $_POST['id_tai_khoan'];
+               
+                #lưu tạm vào ss
+                $_SESSION['hoa_don'] = [
+                    'tong_gio_hang' => $tong_gio_hang,
+                    'tai_khoan' => $id_tai_khoan,
+                    'bien_the' => []
+                ];
+                
+                foreach ($id_bien_the as $key => $id_bt) {
+                    $ten_san_pham =tim_ten_san_pham($id_bt);
+                    $size_value = $_POST['size_name'][$key];
+                    $_SESSION['hoa_don']['bien_the'][] = [
+                        'id_bien_the' => $id_bt,
+                        'so_luong' => $so_luong[$key],
+                       'ten_san_pham' => $ten_san_pham,
+                        'size_name' => $size_name[$key],
+                        'hinh_anh' => $hinh_anh[$key],
+                        'gia_tong_bien_the' => $gia_tong_bien_the[$key],
+                    ];
+                }
+                
+            }
+            include 'view/thanhtoan.php';
            break;
        
        case 'xac_nhan':
@@ -57,6 +187,15 @@ if(isset($_GET['act'])){
        
        case 'trang_xac_nhan':
            // Xử lý hiển thị trang xác nhận
+       if(isset($_SESSION['user'])){
+                        $id_tai_khoan = $_SESSION['user']['id_tai_khoan'];
+                    }
+                    $id_don_hang = tim_id_don();
+                    $hoa_don =show_hoa_don($id_don_hang);
+                    if(isset($_SESSION['hoa_don'])){
+                        unset($_SESSION['hoa_don']);
+                    }
+                    include 'view/xacnhanhoadon.php';
            break;
        
        case 'trang_online':
@@ -69,14 +208,39 @@ if(isset($_GET['act'])){
        
        case 'chi_tiet_don':
            // Xử lý chi tiết đơn hàng
+       if (isset($_GET['id_ctsp'])) {
+                $id_san_pham = $_GET['id_ctsp'];
+                $one_san_pham = show_1_san_pham($id_san_pham);
+                $binh_luan = show_binh_luan_theo_san_pham($id_san_pham);
+                update_view($id_san_pham);
+            }  
+       
+            include 'view/chitietsanpham.php';
            break;
 
+      case 'danh_gia':
+           // Xử lý code đánh giá
+           break;
+
+      case 'binh_luan':
+           // Xử lý code bình luận
+           break;
+
+      case 've_chung_toi':
+           // Xử lý code về chúng tôi
+           break;
        default:
            // Xử lý mặc định
+      $iddm =0;   
+    $san_pham =   tat_ca_san_pham_view($iddm);
+    include 'view/main.php';
            break;
    }
 }else{
+$iddm =0;
+    $san_pham =  tat_ca_san_pham_view($iddm);
 
+    include 'view/main.php';
 }
 include 'view/footer.php';
 ?>
