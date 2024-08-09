@@ -171,6 +171,17 @@ if(isset($_GET['act'])){
             include 'view/chitietsanpham.php';
            break;
 
+      case 'danh_gia':
+           // Xử lý code đánh giá
+           break;
+
+      case 'binh_luan':
+           // Xử lý code bình luận
+           break;
+
+      case 've_chung_toi':
+           // Xử lý code về chúng tôi
+           break;
        default:
            // Xử lý mặc định
            break;
